@@ -51,6 +51,20 @@
             <version>6.1.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-facet -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-facet</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-facet -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-expressions</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+
 
     </dependencies>
 
