@@ -8,6 +8,9 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.spatial3d.geom.GeoBBox;
+import org.apache.lucene.spatial3d.geom.GeoCompositePolygon;
+import org.apache.lucene.spatial3d.geom.GeoDistanceShape;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -110,6 +113,7 @@ public class LatLonSample {
         System.out.println("\nLatLonQuery  Geo3D Query - Sri Lanka-------------------------------------");
 
         docs = searcher.search(Geo3DPoint.newPolygonQuery("geo3d",new Polygon(mapLat,mapLon)),20);
+//        docs = searcher.search(Geo3DPoint.newShapeQuery("geo3d", new Ge),20);
         for (ScoreDoc scoreDoc: docs.scoreDocs
                 ) {
             Document doc = searcher.doc(scoreDoc.doc);
