@@ -16,17 +16,9 @@
  */
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.facet.FacetField;
-import org.apache.lucene.facet.FacetResult;
-import org.apache.lucene.facet.Facets;
-import org.apache.lucene.facet.FacetsCollector;
-import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.*;
 import org.apache.lucene.facet.taxonomy.FastTaxonomyFacetCounts;
 import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
@@ -40,24 +32,45 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 
-/** Demonstrates indexing categories into different indexed fields. */
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Demonstrates indexing categories into different indexed fields.
+ */
 public class MultiCategoryListsFacetsExample {
 
   private final Directory indexDir = new RAMDirectory();
   private final Directory taxoDir = new RAMDirectory();
   private final FacetsConfig config = new FacetsConfig();
 
-  /** Creates a new instance and populates the category list params mapping. */
+  /**
+   * Creates a new instance and populates the category list params mapping.
+   */
   public MultiCategoryListsFacetsExample() {
     config.setIndexFieldName("Author", "author");
     config.setIndexFieldName("Publish Date", "pubdate");
     config.setHierarchical("Publish Date", true);
   }
 
-  /** Build the example index. */
+  /**
+   * Runs the search example and prints the results.
+   */
+  public static void main(String[] args) throws Exception {
+    System.out.println("Facet counting over multiple category lists example:");
+    System.out.println("-----------------------");
+    List<FacetResult> results = new MultiCategoryListsFacetsExample().runSearch();
+    System.out.println("Author: " + results.get(0));
+    System.out.println("Publish Date: " + results.get(1));
+  }
+
+  /**
+   * Build the example index.
+   */
   private void index() throws IOException {
     IndexWriter indexWriter = new IndexWriter(indexDir, new IndexWriterConfig(
-        new WhitespaceAnalyzer()).setOpenMode(OpenMode.CREATE));
+            new WhitespaceAnalyzer()).setOpenMode(OpenMode.CREATE));
 
     // Writes facet ords to a separate directory from the main index
     DirectoryTaxonomyWriter taxoWriter = new DirectoryTaxonomyWriter(taxoDir);
@@ -86,12 +99,14 @@ public class MultiCategoryListsFacetsExample {
     doc.add(new FacetField("Author", "Frank"));
     doc.add(new FacetField("Publish Date", "1999", "5", "5"));
     indexWriter.addDocument(config.build(taxoWriter, doc));
-    
+
     indexWriter.close();
     taxoWriter.close();
   }
 
-  /** User runs a query and counts facets. */
+  /**
+   * User runs a query and counts facets.
+   */
   private List<FacetResult> search() throws IOException {
     DirectoryReader indexReader = DirectoryReader.open(indexDir);
     IndexSearcher searcher = new IndexSearcher(indexReader);
@@ -113,25 +128,18 @@ public class MultiCategoryListsFacetsExample {
 
     Facets pubDate = new FastTaxonomyFacetCounts("pubdate", taxoReader, config, fc);
     results.add(pubDate.getTopChildren(10, "Publish Date"));
-    
+
     indexReader.close();
     taxoReader.close();
-    
+
     return results;
   }
 
-  /** Runs the search example. */
+  /**
+   * Runs the search example.
+   */
   public List<FacetResult> runSearch() throws IOException {
     index();
     return search();
-  }
-  
-  /** Runs the search example and prints the results. */
-  public static void main(String[] args) throws Exception {
-    System.out.println("Facet counting over multiple category lists example:");
-    System.out.println("-----------------------");
-    List<FacetResult> results = new MultiCategoryListsFacetsExample().runSearch();
-    System.out.println("Author: " + results.get(0));
-    System.out.println("Publish Date: " + results.get(1));
   }
 }
