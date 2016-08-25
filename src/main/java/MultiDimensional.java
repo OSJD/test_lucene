@@ -1,7 +1,5 @@
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.DoublePoint;
-import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -11,6 +9,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.SloppyMath;
 
 import java.io.IOException;
 
@@ -30,6 +29,8 @@ public class MultiDimensional {
 
     //Simple Box Query
     exampleProject.boxQuery();
+
+
   }
 
   private void GenerateSampleIndex() throws IOException {
@@ -39,23 +40,22 @@ public class MultiDimensional {
 
     //Insert Data
     Document doc = new Document();
-    doc.add(new DoublePoint("pos", 12.2, 121.5, 34.3));
-    doc.add(new StoredField("id", 0));
+    doc.add(new FloatPoint("pos", 0, 0));
     doc.add(new StoredField("id", 0));
     writer.addDocument(doc);
 
     doc = new Document();
-    doc.add(new DoublePoint("pos", 12.2, 12.5, 34.3));
+    doc.add(new FloatPoint("pos", 0, 1));
     doc.add(new StoredField("id", 1));
     writer.addDocument(doc);
 
     doc = new Document();
-    doc.add(new DoublePoint("pos", 12.2, 11.5, 34.3));
+    doc.add(new FloatPoint("pos", 1, 1));
     doc.add(new StoredField("id", 2));
     writer.addDocument(doc);
 
     doc = new Document();
-    doc.add(new DoublePoint("pos", 12.2, 21.5, 34.3));
+    doc.add(new FloatPoint("pos", 0, 0));
     doc.add(new StoredField("id", 3));
     writer.addDocument(doc);
 
@@ -67,7 +67,8 @@ public class MultiDimensional {
   public void boxQuery() throws IOException {
 
     System.out.println("Multi dimensional box as a range query --------------------------------------");
-    TopDocs docs = searcher.search(DoublePoint.newRangeQuery("pos", new double[]{0, 12, 0}, new double[]{13, 50, 100.2}), 10);
+//    TopDocs docs = searcher.search(DoublePoint.newRangeQuery("pos", new double[]{0, 12}, new double[]{13, 50}), 10);
+    TopDocs docs = searcher.search(LatLonPoint.newDistanceQuery("pos",0, 0,9950000), 10);
     for (ScoreDoc scoreDoc : docs.scoreDocs
             ) {
       Document doc = searcher.doc(scoreDoc.doc);
