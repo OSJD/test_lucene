@@ -35,7 +35,7 @@ LatLonPoint(String name, double latitude, double longitude)
 ```
 
 ####Geo3DPoint
-Similar to LatLonPoint. If this has no use over LatLon this can be neglected. 
+Similar to LatLonPoint. If this has no use over LatLon this can be neglected but It has shape query which supports paths.
 
 
 
@@ -56,3 +56,16 @@ For API,
     newRangeQuery(String, double[], double[]) for matching points/ranges in n-dimensional space. 
 ```
     
+
+####LatLonPoint
+* Distance Query(Location, Radius)
+* Polygon Query(an Array of Polygon )
+* Box Query (MinLat, MaxLat, MinLon, MaxLon)
+* K-Nearest(Location, K-Number of Points) => Return the K-nearest points.
+
+
+####Geo3DPoint
+* Other than the existing queries, this support geoShape query. 
+    GeoShape can be used to query, 
+    * Polygons with holes
+    * Paths with a given width
