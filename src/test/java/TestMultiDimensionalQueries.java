@@ -136,7 +136,7 @@ public class TestMultiDimensionalQueries {
   @Test
   public void search_LatLon_Distance() throws IOException {
     System.out.println("\nLatLon - Distance Query Example------------------------------------------------------------------------------");
-    List<String> result = searcher.searchLatLonDistanceQuery(FIELDNAME_LATLON,COLOMBO_LAT,COLOMBO_LON,50*1000.0,100);
+    List<String> result = searcher.search_LatLon_Distance(FIELDNAME_LATLON,COLOMBO_LAT,COLOMBO_LON,50*1000.0,100);
     printResult(result);
   }
 
@@ -146,7 +146,7 @@ public class TestMultiDimensionalQueries {
   @Test
   public void search_LatLon_Polygon() throws IOException {
     System.out.println("\nLatLon - Polygon Query Example------------------------------------------------------------------------------");
-    List<String> result = searcher.searchLatLonPolygonQuery(FIELDNAME_LATLON,polygonLat,polygonLon,100);
+    List<String> result = searcher.search_LatLon_Polygon(FIELDNAME_LATLON,polygonLat,polygonLon,100);
     printResult(result);
   }
 
@@ -154,7 +154,7 @@ public class TestMultiDimensionalQueries {
   @Test
   public void search_LatLon_Box() throws IOException {
     System.out.println("\nLatLon - Box Query Example------------------------------------------------------------------------------");
-    List<String> result = searcher.searchLatLonBoxQuery(FIELDNAME_LATLON,COLOMBO_LAT,COLOMBO_LAT+1, COLOMBO_LON, COLOMBO_LON+1,10000);
+    List<String> result = searcher.search_LatLon_Box(FIELDNAME_LATLON,COLOMBO_LAT,COLOMBO_LAT+1, COLOMBO_LON, COLOMBO_LON+1,10000);
     printResult(result);
   }
 
@@ -162,7 +162,7 @@ public class TestMultiDimensionalQueries {
   @Test
   public void search_LatLon_Nearest() throws IOException {
     System.out.println("\nLatLon - Box Query Example------------------------------------------------------------------------------");
-    List<String> result = searcher.searchLatLonNearest(FIELDNAME_LATLON,COLOMBO_LAT, COLOMBO_LON,50);
+    List<String> result = searcher.search_LatLon_Nearest(FIELDNAME_LATLON,COLOMBO_LAT, COLOMBO_LON,50);
     printResult(result);
   }
 
@@ -174,14 +174,14 @@ public class TestMultiDimensionalQueries {
   @Test
   public void search_Double_1D_Exact() throws IOException {
     System.out.println("\nLatLon - Box Query Example------------------------------------------------------------------------------");
-    List<String> result = searcher.searchDouble1DExact(FIELDNAME_ALT,COLOMBO_ALTITUDE,50);
+    List<String> result = searcher.search_Double1D_Exact(FIELDNAME_ALT,COLOMBO_ALTITUDE,50);
     printResult(result);
   }
 
   @Test
   public void search_Double_1D_range() throws IOException {
     System.out.println("\nLatLon - Box Query Example------------------------------------------------------------------------------");
-    List<String> result = searcher.searchDouble1DRange(FIELDNAME_ALT,COLOMBO_ALTITUDE,COLOMBO_ALTITUDE+5,50);
+    List<String> result = searcher.search_Double1D_Range(FIELDNAME_ALT,COLOMBO_ALTITUDE,COLOMBO_ALTITUDE+5,50);
     printResult(result);
   }
 
@@ -189,7 +189,7 @@ public class TestMultiDimensionalQueries {
   @Test
   public void search_Double_MiltiDimensional_Range() throws IOException {
     System.out.println("\nLatLon - Box Query Example------------------------------------------------------------------------------");
-    List<String> result = searcher.searchDoubleRange(FIELDNAME_4D, new double[]{0, 0, 0, 0},new double[]{10,10,1,1},50);
+    List<String> result = searcher.search_Double_Range(FIELDNAME_4D, new double[]{0, 0, 0, 0},new double[]{10,10,1,1},50);
     printResult(result);
   }
 

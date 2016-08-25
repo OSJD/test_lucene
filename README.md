@@ -1,0 +1,1 @@
+####This project is to understand possible use-cases for Multi Dimensional space search using Lucene.
