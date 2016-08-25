@@ -101,8 +101,8 @@ public class LatLonSample {
 
     }
 
+//Polygon of the country. only several points. 
     System.out.println("-----------------------------------------------------------------");
-
     System.out.println("\nLatLonQuery  Polygon Query - Sri Lanka-------------------------------------");
 
     docs = searcher.search(LatLonPoint.newPolygonQuery("latlon", new Polygon(mapLat, mapLon)), 20);
@@ -114,8 +114,9 @@ public class LatLonSample {
 
     }
 
+// Query for a circle on. center is colombo. Radius is 0.01 radians from the center or the earth. Geo3D works with radians. 
     System.out.println("-----------------------------------------------------------------");
-    System.out.println("\nLatLonQuery  Geo3D Circle - Sri Lanka-------------------------------------");
+    System.out.println("\nLatLonQuery  Geo3D Circle - Colombo-------------------------------------");
       GeoCircle circle = GeoCircleFactory.makeGeoCircle(PlanetModel.WGS84, toRadians(6.9270790), toRadians( 79.8612430), 0.01);
       docs = searcher.search(Geo3DPoint.newShapeQuery("geo3d",circle), 10);
     for (ScoreDoc scoreDoc : docs.scoreDocs
@@ -129,6 +130,7 @@ public class LatLonSample {
 
   }
 
+//Load Polygon for Sri Lanka from the file as a series of Lat Lon points 
   public void loadMap() throws FileNotFoundException {
     try (BufferedReader br = new BufferedReader(new FileReader("./data/Sri_Lanka"))) {
       String line = br.readLine();
