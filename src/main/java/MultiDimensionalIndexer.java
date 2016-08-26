@@ -57,6 +57,7 @@ public class MultiDimensionalIndexer {
         case DOUBLE_POINT_1D:
           double doubleValue = (double)dataItem.value;
           doc.add(new DoublePoint(dataItem.name,doubleValue));
+          doc.add(new DoubleDocValuesField(dataItem.name,doubleValue));
           break;
 
         case DOUBLE_POINT:
@@ -69,6 +70,7 @@ public class MultiDimensionalIndexer {
           if(latLon.length!=2)
             throw new Exception("Invalid data entry for LatLon point");
           doc.add(new LatLonPoint(dataItem.name,latLon[0],latLon[1]));
+          doc.add(new  LatLonDocValuesField(dataItem.name,latLon[0],latLon[1]));
           break;
 
         case GEO3D_POINT:

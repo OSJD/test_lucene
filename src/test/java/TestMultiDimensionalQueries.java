@@ -210,7 +210,7 @@ public class TestMultiDimensionalQueries {
   //Facet for ranges
   @Test
   public void range_bucket_Search() throws IOException {
-    searcher.Simple_Ranges(FIELDNAME_ALT,0.0,1.5,25.0,45.5,1000.0);
+    searcher.search_Simple_Ranges(FIELDNAME_ALT,0.0,1.5,25.0,45.5,100.0);
   }
 
 }

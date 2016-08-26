@@ -113,7 +113,7 @@ public class MultiDimensionalSearcher {
     return  getRecordsAsStrings(docs);
   }
 
-  public void Simple_Ranges(String field, Double... ranges) throws IOException {
+  public void search_Simple_Ranges(String field, Double... ranges) throws IOException {
 
     DoubleRange[] doubleRanges  = new DoubleRange[ranges.length-1];
     for(int i=1; i<ranges.length; i++)
@@ -127,6 +127,6 @@ public class MultiDimensionalSearcher {
     //TopDocs docs = searcher.
 
     Facets counts = new DoubleRangeFacetCounts(field,fc,doubleRanges);
-    System.out.println(counts);
+    System.out.println(counts.getTopChildren(ranges.length,field));
   }
 }
