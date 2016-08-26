@@ -132,8 +132,19 @@ There are two indexable fields.
 
 ##GeoPosition Field
 
-* K-Nearest
-* 
+* K-Nearest `(Double lat, Double lon, Double radius, int k)`
+* Sorted by Distance from a given location `(Double lat, Double lon, int limit)`
+* Polygon Query `(IPolygon compositePolygon, int limit)`
+    * Supports composite polygons and polygons with holes.
+    * So there should be a set of __Public Polygon Generation Factory Methods__
+* Polygon Bucket Query `(List<IPolygonBucket> polygonBuckets)`
+    * `PolygonBucket` contains bucket_label and polygon similar to [AnalyticsDrillDownRange](https://github.com/janakact/carbon-analytics/blob/master/components/analytics-core/org.wso2.carbon.analytics.dataservice.commons/src/main/java/org/wso2/carbon/analytics/dataservice/commons/AnalyticsDrillDownRange.java).
+
+Following can be reduced to polygon query to simplyfy the interface
+* Points within given a radius (from a given location)
+* Box Query or rage query for a given Minimum Latitude, Maximum Latitude, Minimum Longitude, Maximum Longitude
+
+
 
     
 
