@@ -9,6 +9,7 @@ import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.spatial3d.Geo3DPoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,4 +104,11 @@ public class MultiDimensionalSearcher {
     return  getRecordsAsStrings(docs);
   }
 
+
+
+  //Geo3D Queries
+  public List<String> search_Geo3D_Circle(String field, Double lat, Double lon, Double radius, int count) throws IOException {
+    TopDocs docs = searcher.search(Geo3DPoint.newDistanceQuery(field,lat,lon,radius),count);
+    return  getRecordsAsStrings(docs);
+  }
 }

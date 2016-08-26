@@ -14,7 +14,7 @@ public class DataField {
     INT_POINT,
     FLOAT_POINT,
     DOUBLE_POINT,
-    LatLon_POINT,
+    LATLON_POINT,
     GEO3D_POINT,
     DOUBLE_POINT_1D
   }

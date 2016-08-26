@@ -2,11 +2,10 @@ import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.spatial3d.Geo3DPoint;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 
 /**
@@ -65,12 +64,20 @@ public class MultiDimensionalIndexer {
           doc.add(new DoublePoint(dataItem.name,doubles));
           break;
 
-        case LatLon_POINT:
+        case LATLON_POINT:
           double[] latLon = (double[])dataItem.value;
           if(latLon.length!=2)
             throw new Exception("Invalid data entry for LatLon point");
           doc.add(new LatLonPoint(dataItem.name,latLon[0],latLon[1]));
           break;
+
+        case GEO3D_POINT:
+          double[] geo3d = (double[])dataItem.value;
+          if(geo3d.length!=2)
+            throw new Exception("Invalid data entry for LatLon point");
+          doc.add(new Geo3DPoint(dataItem.name,geo3d[0],geo3d[1]));
+          break;
+
 
         default:
           doc.add(new StoredField(dataItem.name,(String) dataItem.value));

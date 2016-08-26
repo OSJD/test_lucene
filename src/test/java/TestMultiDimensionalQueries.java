@@ -19,6 +19,7 @@ public class TestMultiDimensionalQueries {
   public static MultiDimensionalIndexer indexer;
 
   public static final String FIELDNAME_LATLON = "latlon";
+  public static final String FIELDNAME_GEO3D= "geo3d";
   public static final String FIELDNAME_ALT = "alt";
   public static final String FIELDNAME_4D = "latLonAltTime";
 
@@ -51,7 +52,7 @@ public class TestMultiDimensionalQueries {
 
         //Field array to be indexed
         //+1 is for LatLon
-        DataField[] fields = new DataField[fieldNames.length+3];
+        DataField[] fields = new DataField[fieldNames.length+4];
 
         //Add all fieldsa as stored fields first
         for(int i=0; i<fieldNames.length;i++)
@@ -68,11 +69,12 @@ public class TestMultiDimensionalQueries {
           double altitude = Double.parseDouble(tags[8]);
           double timeZone = Double.parseDouble(tags[9]);
 
-          fields[fieldNames.length] = new DataField(FIELDNAME_LATLON, latLon, DataField.ColumnType.LatLon_POINT);
-          fields[fieldNames.length+1] = new DataField(FIELDNAME_ALT, altitude, DataField.ColumnType.DOUBLE_POINT_1D);
+          fields[fieldNames.length] = new DataField(FIELDNAME_LATLON, latLon, DataField.ColumnType.LATLON_POINT);
+          fields[fieldNames.length+1] = new DataField(FIELDNAME_GEO3D, latLon, DataField.ColumnType.GEO3D_POINT);
+          fields[fieldNames.length+2] = new DataField(FIELDNAME_ALT, altitude, DataField.ColumnType.DOUBLE_POINT_1D);
 
           double[] latLonAltTime = {latLon[0],latLon[1],altitude,timeZone};
-          fields[fieldNames.length+2] = new DataField(FIELDNAME_4D, latLonAltTime, DataField.ColumnType.DOUBLE_POINT);
+          fields[fieldNames.length+3] = new DataField(FIELDNAME_4D, latLonAltTime, DataField.ColumnType.DOUBLE_POINT);
 
         }
         catch (Exception e)
@@ -161,7 +163,7 @@ public class TestMultiDimensionalQueries {
   //Return the given number of nearest points
   @Test
   public void search_LatLon_Nearest() throws IOException {
-    System.out.println("\nLatLon - Box Query Example------------------------------------------------------------------------------");
+    System.out.println("\nLatLon - K Nearest------------------------------------------------------------------------------");
     List<String> result = searcher.search_LatLon_Nearest(FIELDNAME_LATLON,COLOMBO_LAT, COLOMBO_LON,50);
     printResult(result);
   }
@@ -173,14 +175,14 @@ public class TestMultiDimensionalQueries {
   //Exact value query for 1D only
   @Test
   public void search_Double_1D_Exact() throws IOException {
-    System.out.println("\nLatLon - Box Query Example------------------------------------------------------------------------------");
+    System.out.println("\nDoublePoint 1D Point Exact------------------------------------------------------------------------------");
     List<String> result = searcher.search_Double1D_Exact(FIELDNAME_ALT,COLOMBO_ALTITUDE,50);
     printResult(result);
   }
 
   @Test
   public void search_Double_1D_range() throws IOException {
-    System.out.println("\nLatLon - Box Query Example------------------------------------------------------------------------------");
+    System.out.println("\nDoublePoint 1D - Range------------------------------------------------------------------------------");
     List<String> result = searcher.search_Double1D_Range(FIELDNAME_ALT,COLOMBO_ALTITUDE,COLOMBO_ALTITUDE+5,50);
     printResult(result);
   }
@@ -188,10 +190,18 @@ public class TestMultiDimensionalQueries {
 
   @Test
   public void search_Double_MiltiDimensional_Range() throws IOException {
-    System.out.println("\nLatLon - Box Query Example------------------------------------------------------------------------------");
+    System.out.println("\nDoublePoint multi dimensional - Range------------------------------------------------------------------------------");
     List<String> result = searcher.search_Double_Range(FIELDNAME_4D, new double[]{0, 0, 0, 0},new double[]{10,10,1,1},50);
     printResult(result);
   }
 
+
+
+  @Test
+  public void search_Geo3D_Distance() throws IOException {
+    System.out.println("\nGeo3D Distance------------------------------------------------------------------------------");
+    List<String> result = searcher.search_Geo3D_Circle(FIELDNAME_GEO3D,COLOMBO_LAT,COLOMBO_LON,50*1000.0,50);
+    printResult(result);
+  }
 
 }

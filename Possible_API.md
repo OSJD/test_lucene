@@ -7,9 +7,10 @@ For multi dimensional space search Lucene 6.1 provides following Fields to index
     * FloatPoint
     * DoublePoint
     
-* LatLonPoint
-* Geo3DPoint
+* LatLonPoint and Geo3DPoint
 
+Geo3DPoint similar to LatLonPoint. It is an internal implementation design, which is about the math used inside calculation. LatLonPoint uses Haversine distance while Geo3D ueses direct math. That's what I heard. ;)
+It seems like that LatLonPoint has better performance. ([Benchmarks](http://home.apache.org/~mikemccand/geobench.html))
 
 ##Indexing
 
@@ -24,7 +25,7 @@ FloatPoint(String name, float... point)
 DoublePoint(String name, double... point)
 ```
 
-####LatLonPoint
+####LatLonPoint and Geo3DPoint
 Used to Query on the surface of a Planet.
 
 An indexed location field. Finding all documents within a range at search time is efficient. Multiple values for the same field in one document is allowed.
@@ -34,12 +35,8 @@ Accept 2 double values.
 LatLonPoint(String name, double latitude, double longitude)
 ```
 
-####Geo3DPoint
-Similar to LatLonPoint. If this has no use over LatLon this can be neglected but It has shape query which supports paths.
 
-
-
-##Querying
+##Querying - Direct
 
 ####Basic Space Points
 
@@ -59,13 +56,87 @@ For API,
 
 ####LatLonPoint
 * Distance Query(Location, Radius)
+```
+public static Query newDistanceQuery(String field,
+                                     double latitude,
+                                     double longitude,
+                                     double radiusMeters)
+```
+
 * Polygon Query(an Array of Polygon )
+```
+public static Query newPolygonQuery(String field,
+                                    Polygon... polygons)
+```
 * Box Query (MinLat, MaxLat, MinLon, MaxLon)
-* K-Nearest(Location, K-Number of Points) => Return the K-nearest points.
+```
+public static Query newBoxQuery(String field,
+                                double minLatitude,
+                                double maxLatitude,
+                                double minLongitude,
+                                double maxLongitude)
+```
+* K-Nearest(Location, K-Number of Points) => Return the K-nearest points. This is not a query this is a search result. Therefore searcher shoul be provided. 
+```
+public static TopFieldDocs nearest(IndexSearcher searcher,
+                                   String field,
+                                   double latitude,
+                                   double longitude,
+                                   int n)
+                            throws IOException
+```
 
 
 ####Geo3DPoint
-* Other than the existing queries, this support geoShape query. 
+Other than the existing queries, this support geoShape query. Also Geo3DPoint do not support K-Nearest query. 
     GeoShape can be used to query, 
-    * Polygons with holes
-    * Paths with a given width
+* Polygons with holes
+```
+    public static GeoPolygon makeGeoPolygon(PlanetModel planetModel,
+                                            List<GeoPoint> pointList,
+                                            List<GeoPolygon> holes)
+```
+
+* Paths with a given width. Width of the path should be provided as a angle(radian) from the center of the planet.
+```
+public static GeoPath makeGeoPath(PlanetModel planetModel,
+                                  double maxCutoffAngle,
+                                  GeoPoint[] pathPoints)
+```
+
+##Querying - Indirect
+
+####Basic Space Points
+
+####LatLon or Geo3D
+* Area Buckets (Polygon... polygons) - Accepts a series of polygons (Areas marked on the planet surface).
+ Those polygons can represent buckets. This will devide points in to each area, and put them into buckets and return.
+ 
+ 
+ 
+ 
+#Public Interface
+
+There are two indexable fields. 
+
+* GeoPosition Field to search on the surface of planet.
+    > Seeems like we have to index 
+    > * LatLonPoint
+    > * Geo3DPoint
+    > * **LatLonDocValuesField** - If you also need per-document operations such as sort by distance, add a separate LatLonDocValuesField instance.
+
+* VectorSpace Field - Multi Dimensional Space Field.
+    > There is a problem whether to index using int, double, or float.. may be all
+    > This can be used for scientific functionalities. It is hard to find much use cases here.
+    
+
+##GeoPosition Field
+
+* K-Nearest
+* 
+
+    
+
+##VectorSpace Field
+* Range Query
+* Exact Query
