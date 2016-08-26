@@ -1,14 +1,15 @@
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoublePoint;
 import org.apache.lucene.document.LatLonPoint;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.range.DoubleRange;
+import org.apache.lucene.facet.range.DoubleRangeFacetCounts;
 import org.apache.lucene.geo.Polygon;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.search.FieldComparator;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.spatial3d.Geo3DPoint;
 
 import java.io.IOException;
@@ -112,8 +113,20 @@ public class MultiDimensionalSearcher {
     return  getRecordsAsStrings(docs);
   }
 
-  public void QueryAggregationTest()
-  {
+  public void Simple_Ranges(String field, Double... ranges) throws IOException {
+
+    DoubleRange[] doubleRanges  = new DoubleRange[ranges.length-1];
+    for(int i=1; i<ranges.length; i++)
+    {
+      doubleRanges[i-1] = new DoubleRange(String.valueOf(i),ranges[i-1],true,ranges[i],true);
+    }
+
+    FacetsCollector fc = new FacetsCollector();
+
+    searcher.search(new MatchAllDocsQuery(), fc);
     //TopDocs docs = searcher.
+
+    Facets counts = new DoubleRangeFacetCounts(field,fc,doubleRanges);
+    System.out.println(counts);
   }
 }

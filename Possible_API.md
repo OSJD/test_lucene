@@ -132,20 +132,28 @@ There are two indexable fields.
 
 ##GeoPosition Field
 
-* K-Nearest `(Double lat, Double lon, Double radius, int k)`
-* Sorted by Distance from a given location `(Double lat, Double lon, int limit)`
-* Polygon Query `(IPolygon compositePolygon, int limit)`
+1. Points - K-Nearest `(Double lat, Double lon, Double radius, int k)`
+2. Points - Sorted by Distance from a given location `(Double lat, Double lon, int limit)`
+3. Points - within a given radius (from a given location)
+4. Points - inside the polygon - Polygon Query -  `(IPolygon compositePolygon, int limit)`
     * Supports composite polygons and polygons with holes.
     * So there should be a set of __Public Polygon Generation Factory Methods__
-* Polygon Bucket Query `(List<IPolygonBucket> polygonBuckets)`
+5. Points - for each Polygon Bucket - Bucket Query `(List<IPolygonBucket> polygonBuckets)`
     * `PolygonBucket` contains bucket_label and polygon. Similar to [AnalyticsDrillDownRange](https://github.com/janakact/carbon-analytics/blob/master/components/analytics-core/org.wso2.carbon.analytics.dataservice.commons/src/main/java/org/wso2/carbon/analytics/dataservice/commons/AnalyticsDrillDownRange.java).
 
-Following can be reduced to polygon query to simplyfy the interface
-* Points within given a radius (from a given location)
-* Box Query or rage query for a given Minimum Latitude, Maximum Latitude, Minimum Longitude, Maximum Longitude
 
+Following can be reduced to polygon query to simplyfy the interface
+6. Points - inside the Box Query or rage query for a given Minimum Latitude, Maximum Latitude, Minimum Longitude, Maximum Longitude
+
+#####Counts
+7. Point Count - within a given radius
+8. Point Count - inside a polygon 
+9. Point Count - for each bucket for a list of polygons.
+10. Point Count - inside a given box
 
 ####Sorting and Composition
+
+Lucene support sorting as a seperate functionality for all query results. Sorts can be aplied only on sortable fields.
 * K-Nearest, Polygon, PolygoBucket can be sorted by a given sortable field. 
 * There should be a mechanism to make composite queries using a set of queries.
     * There are two options for now. 
@@ -156,5 +164,11 @@ Following can be reduced to polygon query to simplyfy the interface
 * Further this sorting and filtering composition can be from text search too. Therefore text search should also support this query composition.
 
 ##VectorSpace Field
-* Range Query `(int[] lowMargin, int[] highMargin) or (double[] lowMargin, double[] hightMargin)`
-* Exact Query
+1. Exact Query
+2. Range Query `(int[] lowMargin, int[] highMargin) or (double[] lowMargin, double[] hightMargin)`
+3. Rage Bucke Query 
+
+#####Counts
+4. Point Count - Exact Query
+5. Point Count - Range Query
+6. Point Count - for each range bucket
