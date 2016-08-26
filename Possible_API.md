@@ -138,7 +138,7 @@ There are two indexable fields.
     * Supports composite polygons and polygons with holes.
     * So there should be a set of __Public Polygon Generation Factory Methods__
 * Polygon Bucket Query `(List<IPolygonBucket> polygonBuckets)`
-    * `PolygonBucket` contains bucket_label and polygon similar to [AnalyticsDrillDownRange](https://github.com/janakact/carbon-analytics/blob/master/components/analytics-core/org.wso2.carbon.analytics.dataservice.commons/src/main/java/org/wso2/carbon/analytics/dataservice/commons/AnalyticsDrillDownRange.java).
+    * `PolygonBucket` contains bucket_label and polygon. Similar to [AnalyticsDrillDownRange](https://github.com/janakact/carbon-analytics/blob/master/components/analytics-core/org.wso2.carbon.analytics.dataservice.commons/src/main/java/org/wso2/carbon/analytics/dataservice/commons/AnalyticsDrillDownRange.java).
 
 Following can be reduced to polygon query to simplyfy the interface
 * Points within given a radius (from a given location)
@@ -153,8 +153,8 @@ Following can be reduced to polygon query to simplyfy the interface
         2. Expose Lucenes Query class and factory methods.
         > 1st one can be prefered because interface of lucene may change by time, there for we need a connector to keep our interfaces consistant. 
 
-
+* Further this sorting and filtering composition can be from text search too. Therefore text search should also support this query composition.
 
 ##VectorSpace Field
-* Range Query
+* Range Query `(int[] lowMargin, int[] highMargin) or (double[] lowMargin, double[] hightMargin)`
 * Exact Query
