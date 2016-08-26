@@ -111,4 +111,9 @@ public class MultiDimensionalSearcher {
     TopDocs docs = searcher.search(Geo3DPoint.newDistanceQuery(field,lat,lon,radius),count);
     return  getRecordsAsStrings(docs);
   }
+
+  public void QueryAggregationTest()
+  {
+    //TopDocs docs = searcher.
+  }
 }

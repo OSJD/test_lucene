@@ -145,8 +145,15 @@ Following can be reduced to polygon query to simplyfy the interface
 * Box Query or rage query for a given Minimum Latitude, Maximum Latitude, Minimum Longitude, Maximum Longitude
 
 
+####Sorting and Composition
+* K-Nearest, Polygon, PolygoBucket can be sorted by a given sortable field. 
+* There should be a mechanism to make composite queries using a set of queries.
+    * There are two options for now. 
+        1. Implement a QueryRequest class and composistion factory methods for that.
+        2. Expose Lucenes Query class and factory methods.
+        > 1st one can be prefered because interface of lucene may change by time, there for we need a connector to keep our interfaces consistant. 
 
-    
+
 
 ##VectorSpace Field
 * Range Query
