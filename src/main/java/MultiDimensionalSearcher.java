@@ -1,8 +1,11 @@
+import org.antlr.v4.runtime.misc.Triple;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoublePoint;
 import org.apache.lucene.document.LatLonPoint;
+import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
 import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.LabelAndValue;
 import org.apache.lucene.facet.range.DoubleRange;
 import org.apache.lucene.facet.range.DoubleRangeFacetCounts;
 import org.apache.lucene.geo.Polygon;
@@ -11,6 +14,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.*;
 import org.apache.lucene.spatial3d.Geo3DPoint;
+import org.apache.lucene.spatial3d.geom.LatLonBounds;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +48,19 @@ public class MultiDimensionalSearcher {
     }
     return returnList;
   }
+
+  private List<String> getRecordsAsStrings(LabelAndValue[] labelValues) throws IOException {
+
+    List<String> returnList = new ArrayList<>();
+
+    for (LabelAndValue item:labelValues
+         ) {
+        returnList.add("Label='"+item.label+"'\t\tValue="+item.value);
+    }
+
+    return returnList;
+  }
+
 
 
   /****************************************************************
@@ -96,6 +113,26 @@ public class MultiDimensionalSearcher {
   }
 
 
+  //Buckets are provided as triples of String, Double, Double
+  public List<String> search_Double1D_Range_Buckets_Simple(String field, Triple<String,Double,Double>... buckets) throws IOException {
+
+    DoubleRange[] doubleRanges  = new DoubleRange[buckets.length];
+    for(int i=0; i<buckets.length;i++)
+    {
+      doubleRanges[i] = new DoubleRange(buckets[i].a,buckets[i].b,true,buckets[i].c,true);
+    }
+
+    FacetsCollector fc = new FacetsCollector();
+
+    searcher.search(new MatchAllDocsQuery(), fc);
+    //TopDocs docs = searcher.
+
+    Facets counts = new DoubleRangeFacetCounts(field,fc,doubleRanges);
+    FacetResult result = counts.getTopChildren(buckets.length,field);
+
+    return getRecordsAsStrings(result.labelValues);
+  }
+
 
 
   //Possible Queries for a Double Field----------------------------------------------------------
@@ -105,28 +142,27 @@ public class MultiDimensionalSearcher {
     return  getRecordsAsStrings(docs);
   }
 
+  //Lucene do nut support bucket functionality for multi dimensional points. but it can be provided using a series of range queries
+  public List<String> search_Double_Range_bucket(String field, Triple<String,double[],double[]>... buckets) throws IOException {
+
+    LabelAndValue[] lableValues = new LabelAndValue[buckets.length];
+
+    for (int i=0; i<buckets.length;i++ ) {
+
+      int value = searcher.count(DoublePoint.newRangeQuery(field,buckets[i].b,buckets[i].c));
+      lableValues[i] = new LabelAndValue(buckets[i].a,value);
+    }
+
+    return getRecordsAsStrings(lableValues);
+  }
 
 
-  //Geo3D Queries
-  public List<String> search_Geo3D_Circle(String field, Double lat, Double lon, Double radius, int count) throws IOException {
+
+
+    //Geo3D Queries
+  public List<String> search_Geo3D_Distance(String field, Double lat, Double lon, Double radius, int count) throws IOException {
     TopDocs docs = searcher.search(Geo3DPoint.newDistanceQuery(field,lat,lon,radius),count);
     return  getRecordsAsStrings(docs);
   }
 
-  public void search_Simple_Ranges(String field, Double... ranges) throws IOException {
-
-    DoubleRange[] doubleRanges  = new DoubleRange[ranges.length-1];
-    for(int i=1; i<ranges.length; i++)
-    {
-      doubleRanges[i-1] = new DoubleRange(String.valueOf(i),ranges[i-1],true,ranges[i],true);
-    }
-
-    FacetsCollector fc = new FacetsCollector();
-
-    searcher.search(new MatchAllDocsQuery(), fc);
-    //TopDocs docs = searcher.
-
-    Facets counts = new DoubleRangeFacetCounts(field,fc,doubleRanges);
-    System.out.println(counts.getTopChildren(ranges.length,field));
-  }
 }

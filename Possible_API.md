@@ -148,7 +148,7 @@ Following can be reduced to polygon query to simplyfy the interface
 #####Counts
 7. Point Count - within a given radius
 8. Point Count - inside a polygon 
-9. Point Count - for each bucket for a list of polygons.
+9. Point Count - for each bucket for a list of polygon buckets
 10. Point Count - inside a given box
 
 ####Sorting and Composition

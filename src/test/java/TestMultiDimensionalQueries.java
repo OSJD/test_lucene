@@ -1,3 +1,5 @@
+import org.antlr.v4.runtime.misc.Triple;
+import org.apache.lucene.facet.range.DoubleRange;
 import org.apache.lucene.spatial3d.geom.GeoPoint;
 import org.apache.lucene.spatial3d.geom.PlanetModel;
 import org.junit.BeforeClass;
@@ -172,22 +174,50 @@ public class TestMultiDimensionalQueries {
 
   //Test Codes for DoublePoint 1D Quetries
 
-  //Exact value query for 1D only
+  //Exact value query for 1D only. Search for the airports with the exact altitude of Colombo Airport
   @Test
   public void search_Double_1D_Exact() throws IOException {
     System.out.println("\nDoublePoint 1D Point Exact------------------------------------------------------------------------------");
-    List<String> result = searcher.search_Double1D_Exact(FIELDNAME_ALT,COLOMBO_ALTITUDE,50);
+    List<String> result = searcher.search_Double1D_Exact(FIELDNAME_ALT,COLOMBO_ALTITUDE,500);
     printResult(result);
   }
 
+  //Search for the airports which has the given altitude range.
   @Test
   public void search_Double_1D_range() throws IOException {
     System.out.println("\nDoublePoint 1D - Range------------------------------------------------------------------------------");
-    List<String> result = searcher.search_Double1D_Range(FIELDNAME_ALT,COLOMBO_ALTITUDE,COLOMBO_ALTITUDE+5,50);
+    List<String> result = searcher.search_Double1D_Range(FIELDNAME_ALT,800,805,50);
     printResult(result);
   }
 
+  //Divide and give counts for each bucket, buckets are depend on the altitude ranges provided
+  @Test
+  public void search_Double_1D_range_bucket() throws IOException {
+    System.out.println("\nDoublePoint 1D - Range Buckets -----------------------------------------------------------------------------");
 
+
+    Triple<String,Double,Double>[] buckets = new Triple[10];
+
+    //Create Buckets
+    for(int i=0; i<10; i++)
+    {
+      buckets[i] = new Triple<>(String.valueOf(i),i*100.0,(i+1)*100.0);
+    }
+
+    List<String> result = searcher.search_Double1D_Range_Buckets_Simple(FIELDNAME_ALT,buckets);
+    printResult(result);
+  }
+
+  //Give airports which has the given ranges for each value.
+  // {Latitude, Longitude, Altitude, TimeZone}
+  /*
+  Latitude: 0-10
+  Longitude: 0-10
+  Altitude: 0-1
+  TimeZone: 0-1
+
+  The airport which match the given ranges will be displayed.
+   */
   @Test
   public void search_Double_MiltiDimensional_Range() throws IOException {
     System.out.println("\nDoublePoint multi dimensional - Range------------------------------------------------------------------------------");
@@ -197,20 +227,15 @@ public class TestMultiDimensionalQueries {
 
 
 
+  //Print airports with the given range Geo3D circle. Points within a given distance.
+  //Colombo is the center. radius is 50km.
   @Test
   public void search_Geo3D_Distance() throws IOException {
     System.out.println("\nGeo3D Distance------------------------------------------------------------------------------");
-    List<String> result = searcher.search_Geo3D_Circle(FIELDNAME_GEO3D,COLOMBO_LAT,COLOMBO_LON,50*1000.0,50);
+    List<String> result = searcher.search_Geo3D_Distance(FIELDNAME_GEO3D,COLOMBO_LAT,COLOMBO_LON,50*1000.0,50);
     printResult(result);
   }
 
 
-
-  //Sample Tests
-  //Facet for ranges
-  @Test
-  public void range_bucket_Search() throws IOException {
-    searcher.search_Simple_Ranges(FIELDNAME_ALT,0.0,1.5,25.0,45.5,100.0);
-  }
 
 }
