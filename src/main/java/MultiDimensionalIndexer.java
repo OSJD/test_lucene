@@ -69,8 +69,18 @@ public class MultiDimensionalIndexer {
           double[] latLon = (double[])dataItem.value;
           if(latLon.length!=2)
             throw new Exception("Invalid data entry for LatLon point");
+
+
+          float[] floats2 = new float[2];
+          floats2[0] = (float) latLon[0];
+          floats2[1] = (float) latLon[1];
+          //doc.add(new FloatPoint(dataItem.name,floats2));
+
           doc.add(new LatLonPoint(dataItem.name,latLon[0],latLon[1]));
-          doc.add(new  LatLonDocValuesField(dataItem.name,latLon[0],latLon[1]));
+          doc.add(new FloatPoint(dataItem.name, 0f,0f));
+//          doc.add(new Geo3DPoint(dataItem.name,(double)floats2[0], (double)floats2[1]));
+          //doc.add(new DoublePoint(dataItem.name, (double) floats2[0], (double)floats2[1]));
+         // doc.add(new  LatLonDocValuesField(dataItem.name,latLon[0],latLon[1]));
           break;
 
         case GEO3D_POINT:

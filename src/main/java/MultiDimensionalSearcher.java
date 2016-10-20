@@ -1,6 +1,7 @@
 import org.antlr.v4.runtime.misc.Triple;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoublePoint;
+import org.apache.lucene.document.FloatPoint;
 import org.apache.lucene.document.LatLonPoint;
 import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
@@ -139,6 +140,11 @@ public class MultiDimensionalSearcher {
   //Search double range multi dimensional
   public List<String> search_Double_Range(String field, double[] lower, double[] upper, int count) throws IOException {
     TopDocs docs = searcher.search(DoublePoint.newRangeQuery(field,lower,upper),count);
+    return  getRecordsAsStrings(docs);
+  }
+
+  public List<String> search_Float_Range(String field, float[] lower, float[] upper, int count) throws IOException {
+    TopDocs docs = searcher.search(FloatPoint.newRangeQuery(field,lower,upper),count);
     return  getRecordsAsStrings(docs);
   }
 

@@ -25,6 +25,11 @@ public class TestMultiDimensionalQueries {
   public static final String FIELDNAME_ALT = "alt";
   public static final String FIELDNAME_4D = "latLonAltTime";
 
+  public static final String FIELDNAME_FLOAT_2D = "2dFloat";
+  public static final String FIELDNAME_DOUBLE_2D = "2dDouble";
+
+
+
   public static final double COLOMBO_LAT =  6.9270790;
   public static final double COLOMBO_LON =  79.8612430;
   public static final double COLOMBO_ALTITUDE =  22.0;
@@ -74,6 +79,8 @@ public class TestMultiDimensionalQueries {
           fields[fieldNames.length] = new DataField(FIELDNAME_LATLON, latLon, DataField.ColumnType.LATLON_POINT);
           fields[fieldNames.length+1] = new DataField(FIELDNAME_GEO3D, latLon, DataField.ColumnType.GEO3D_POINT);
           fields[fieldNames.length+2] = new DataField(FIELDNAME_ALT, altitude, DataField.ColumnType.DOUBLE_POINT_1D);
+
+
 
           double[] latLonAltTime = {latLon[0],latLon[1],altitude,timeZone};
           fields[fieldNames.length+3] = new DataField(FIELDNAME_4D, latLonAltTime, DataField.ColumnType.DOUBLE_POINT);
@@ -140,7 +147,7 @@ public class TestMultiDimensionalQueries {
   @Test
   public void search_LatLon_Distance() throws IOException {
     System.out.println("\nLatLon - Distance Query Example------------------------------------------------------------------------------");
-    List<String> result = searcher.search_LatLon_Distance(FIELDNAME_LATLON,COLOMBO_LAT,COLOMBO_LON,50*1000.0,100);
+    List<String> result = searcher.search_LatLon_Distance(FIELDNAME_LATLON,COLOMBO_LAT,COLOMBO_LON,500*1000.0,100);
     printResult(result);
   }
 
@@ -221,6 +228,7 @@ public class TestMultiDimensionalQueries {
   @Test
   public void search_Double_MiltiDimensional_Range() throws IOException {
     System.out.println("\nDoublePoint multi dimensional - Range------------------------------------------------------------------------------");
+//    List<String> result = searcher.search_Double_Range(FIELDNAME_4D, new double[]{-100, 0, 0, -1000},new double[]{-80,10,10000,10000},50);
     List<String> result = searcher.search_Double_Range(FIELDNAME_4D, new double[]{0, 0, 0, 0},new double[]{10,10,1,1},50);
     printResult(result);
   }
@@ -234,6 +242,15 @@ public class TestMultiDimensionalQueries {
     System.out.println("\nGeo3D Distance------------------------------------------------------------------------------");
     List<String> result = searcher.search_Geo3D_Distance(FIELDNAME_GEO3D,COLOMBO_LAT,COLOMBO_LON,50*1000.0,50);
     printResult(result);
+  }
+
+  @Test
+  public void search_2D() throws IOException {
+    System.out.println("\n2D Search------------------------------------------------------------------------------");
+    float[] arr = {0,0};
+    List<String> result = searcher.search_Float_Range(FIELDNAME_LATLON,arr,arr,100);
+    printResult(result);
+
   }
 
 
